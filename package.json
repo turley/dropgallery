@@ -46,7 +46,7 @@
     "@aws-sdk/lib-storage": "^3.600.0",
     "@inquirer/prompts": "^8.4.2",
     "clipboardy": "^5.3.1",
-    "dotenv": "^16.4.0",
+    "dotenv": "^17.4.2",
     "env-paths": "^4.0.0",
     "open": "^11.0.0",
     "ora": "^9.4.0",
