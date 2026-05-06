@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+{{BASE_HREF}}
+<title>{{TITLE_TEXT}}</title>
+<link rel="stylesheet" href="photoswipe/photoswipe.css">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #0a0a0a;
+    color: #e8e8e8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1 {
+    margin: 0 0 24px;
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-align: center;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 240px));
+    gap: 8px;
+    justify-content: center;
+  }
+  .tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #1a1a1a;
+    cursor: zoom-in;
+  }
+  .tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 200ms ease;
+  }
+  .tile:hover img { transform: scale(1.03); }
+  .tile.is-video::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='black' fill-opacity='0.5'/><polygon points='9,7 9,17 17,12' fill='white' fill-opacity='0.9'/></svg>") center / 64px no-repeat;
+    pointer-events: none;
+  }
+  .pswp__video-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  .pswp__video-wrap video {
+    max-width: 100%;
+    max-height: 100%;
+    background: #000;
+  }
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    /* Mobile keeps the original auto-fill + 1fr rule: on a phone screen the
+       grid almost always fills the width anyway, and the auto-fit + 240px
+       cap from the desktop rule made single-tile galleries jump from
+       ~171px to 240px. */
+    .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+    h1 { font-size: 1.4rem; margin-bottom: 16px; }
+  }
+</style>
+</head>
+<body>
+{{HEADING}}
+<div class="grid" id="gallery">
+{{TILES}}
+</div>
+<script type="module">
+import PhotoSwipeLightbox from './photoswipe/photoswipe-lightbox.esm.min.js';
+import PhotoSwipe from './photoswipe/photoswipe.esm.min.js';
+
+// Canonical PhotoSwipe v5 setup: it reads each slide's data from the clicked
+// <a>'s data-pswp-* attributes (data-pswp-width/height for AR, data-pswp-type
+// for custom content like videos). The thumbnail msrc is auto-detected from
+// the <img> child. We do NOT pass a dataSource here — when both `gallery` and
+// `children` are set, PhotoSwipeLightbox always rebuilds dataSource from the
+// clicked DOM at click time, which would silently override any array we passed.
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery',
+  children: 'a',
+  pswpModule: PhotoSwipe,
+  bgOpacity: 0.95,
+});
+
+// Custom content type for videos: data-pswp-type="video" on the <a> sets
+// content.type to "video"; we replace the slide element with a <video controls>
+// pointing at the same href.
+lightbox.on('contentLoad', (e) => {
+  const { content } = e;
+  if (content.type !== 'video') return;
+  e.preventDefault();
+  const wrap = document.createElement('div');
+  wrap.className = 'pswp__video-wrap';
+  const video = document.createElement('video');
+  video.controls = true;
+  video.preload = 'metadata';
+  video.src = content.data.src;
+  if (content.data.msrc) video.poster = content.data.msrc;
+
+  // Stop pointer events on the <video> from bubbling up to PhotoSwipe's
+  // gesture layer. Without this, dragging on the timeline scrubber gets
+  // interpreted as a swipe-to-next-slide and the controls become unusable.
+  // Trade-off: the user can no longer swipe FROM the video to change slides
+  // — they must click the arrows, press an arrow key, or click outside the
+  // video. That's the standard fix for interactive embeds in PhotoSwipe
+  // (the docs flag iframes/videos as gesture-conflict cases without a
+  // built-in opt-out).
+  ['pointerdown', 'mousedown', 'touchstart'].forEach((evt) => {
+    video.addEventListener(evt, (ev) => ev.stopPropagation());
+  });
+
+  wrap.appendChild(video);
+  content.element = wrap;
+});
+
+// Pause videos when their slide stops being current (slide change OR close).
+lightbox.on('contentDeactivate', (e) => {
+  if (e.content.type !== 'video') return;
+  const v = e.content.element && e.content.element.querySelector('video');
+  if (v) v.pause();
+});
+
+lightbox.init();
+</script>
+</body>
+</html>
