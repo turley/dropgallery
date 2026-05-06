@@ -1,0 +1,21 @@
+# Local config (contains profile/region/bucket — never commit)
+.galleryrc
+
+# Dependencies
+node_modules/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs (the tool writes to ~/Library/Logs/dropgallery/, but local debug logs
+# may end up here too)
+*.log
+
+# Temp output (staging dirs typically live in os.tmpdir(), but just in case)
+tmp/
+.tmp/

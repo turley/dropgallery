@@ -1,0 +1,55 @@
+{
+  "name": "dropgallery",
+  "version": "0.1.1",
+  "description": "CLI that turns a selection of images and videos into a single shareable static gallery hosted on S3 + CloudFront. macOS-first (Apple Shortcut → native dialogs) with a cross-platform terminal mode.",
+  "type": "module",
+  "bin": {
+    "dropgallery": "./gallery.js"
+  },
+  "scripts": {
+    "start": "node gallery.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "MIT",
+  "author": "Ben Turley",
+  "homepage": "https://github.com/turley/dropgallery",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turley/dropgallery.git"
+  },
+  "bugs": {
+    "url": "https://github.com/turley/dropgallery/issues"
+  },
+  "keywords": [
+    "gallery",
+    "photo",
+    "video",
+    "s3",
+    "cloudfront",
+    "sharing",
+    "static",
+    "photoswipe",
+    "cli",
+    "macos",
+    "apple-shortcut"
+  ],
+  "files": [
+    "gallery.js",
+    "lib/",
+    "templates/"
+  ],
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.600.0",
+    "@aws-sdk/credential-providers": "^3.600.0",
+    "@aws-sdk/lib-storage": "^3.600.0",
+    "@inquirer/prompts": "^8.4.2",
+    "clipboardy": "^5.3.1",
+    "dotenv": "^16.4.0",
+    "env-paths": "^4.0.0",
+    "open": "^11.0.0",
+    "ora": "^9.4.0",
+    "sharp": "^0.33.0"
+  }
+}
