@@ -48,7 +48,7 @@
     "@inquirer/prompts": "^8.4.2",
     "clipboardy": "^5.3.1",
     "env-paths": "^4.0.0",
-    "ini": "^6.0.0",
+    "ini": "^7.0.0",
     "ora": "^9.4.0",
     "sharp": "^0.34.5"
   }
