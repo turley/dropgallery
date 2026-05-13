@@ -130,7 +130,7 @@ S3_BUCKET=your-gallery-bucket
 CLOUDFRONT_DOMAIN=gallery.yourdomain.com
 ```
 
-You can re-run `dropgallery --setup` any time to regenerate the config. Old flat-format configs (no `[section]` headers) from earlier versions still work — they're treated as a single destination named `default`.
+You can re-run `dropgallery --setup` any time to regenerate the config.
 
 ### Multiple destinations
 
